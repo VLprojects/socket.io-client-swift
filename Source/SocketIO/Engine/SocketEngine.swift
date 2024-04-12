@@ -765,7 +765,15 @@ extension SocketEngine {
             parseEngineMessage(msg)
         case let .binary(data):
             parseEngineData(data)
-        case _:
+        case .peerClosed:
+            wsConnected = false
+            websocketDidDisconnect(error: nil)
+        case let .error(error):
+            wsConnected = false
+            websocketDidDisconnect(error: error)
+        case .ping, .pong:
+            break
+        case .viabilityChanged, .reconnectSuggested:
             break
         }
     }
